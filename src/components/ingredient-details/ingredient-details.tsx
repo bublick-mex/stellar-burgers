@@ -6,7 +6,7 @@ import { useSelector } from '../../services/store';
 export const IngredientDetails = (): React.JSX.Element => {
   const { id } = useParams<{ id: string }>();
   const { ingredients } = useSelector((state) => state.ingredients);
-  const ingredientData = ingredients.find((item) => item._id === id || null);
+  const ingredientData = ingredients.find((item) => item._id === id);
 
   if (!ingredientData) {
     return <Preloader />;

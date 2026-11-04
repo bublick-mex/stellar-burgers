@@ -4,7 +4,7 @@ import {
   ProfileIcon,
   Logo,
 } from '@krgaa/react-developer-burger-ui-components';
-import { Link } from 'react-router-dom';
+import { NavLink } from 'react-router-dom';
 
 import type { TAppHeaderUIProps } from './type';
 
@@ -14,24 +14,39 @@ export const AppHeaderUI = ({ userName }: TAppHeaderUIProps): React.JSX.Element 
   <header className={styles.header}>
     <nav className={`${styles.menu} p-4`}>
       <div className={styles.menu_part_left}>
-        <Link to="/" className={styles.link}>
+        <NavLink
+          to="/"
+          className={({ isActive }) =>
+            `${styles.link} ${isActive ? styles.link_active : ''}`
+          }
+        >
           <BurgerIcon type={'primary'} />
           <p className="text text_type_main-default ml-2 mr-10">Конструктор</p>
-        </Link>
-        <Link to="/feed" className={styles.link}>
+        </NavLink>
+        <NavLink
+          to="/feed"
+          className={({ isActive }) =>
+            `${styles.link} ${isActive ? styles.link_active : ''}`
+          }
+        >
           <ListIcon type={'primary'} />
           <p className="text text_type_main-default ml-2">Лента заказов</p>
-        </Link>
+        </NavLink>
       </div>
       <div className={styles.logo}>
         <Logo className="" />
       </div>
-      <Link className={`${styles.link_position_last} ${styles.link}`} to="/profile">
+      <NavLink
+        to="/profile"
+        className={({ isActive }) =>
+          `${styles.link} ${isActive ? styles.link_active : ''}`
+        }
+      >
         <ProfileIcon type={'primary'} />
         <p className="text text_type_main-default ml-2">
           {userName ?? 'Личный кабинет'}
         </p>
-      </Link>
+      </NavLink>
     </nav>
   </header>
 );

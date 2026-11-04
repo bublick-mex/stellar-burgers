@@ -1,16 +1,19 @@
-import { useSelector } from '@/services/store';
+import { getOrderByNumber } from '@/services/slices/orderSlice';
+import { useSelector, useDispatch } from '@/services/store';
 import { Preloader, OrderInfoUI } from '@ui';
-import { useMemo } from 'react';
+import { useMemo, useEffect } from 'react';
 import { useParams } from 'react-router-dom';
 
 import type { TIngredient } from '@utils-types';
 
 export const OrderInfo = (): React.JSX.Element => {
+  const dispatch = useDispatch();
   const { number } = useParams<{ number: string }>();
   const { ingredients } = useSelector((state) => state.ingredients);
   const feedOrders = useSelector((state) => state.feed.orders);
   const profileOrders = useSelector((state) => state.feed?.userOrders);
   const modalOrder = useSelector((state) => state.order?.orderModalData);
+  const currentOrder = useSelector((state) => state.order?.currentOrder);
 
   const orderData = useMemo(() => {
     if (modalOrder && modalOrder.number.toString() === number) {
@@ -21,7 +24,13 @@ export const OrderInfo = (): React.JSX.Element => {
       return allOrders.find((item) => item.number.toString() === number);
     }
     return null;
-  }, [number, modalOrder, feedOrders, profileOrders]);
+  }, [number, modalOrder, feedOrders, profileOrders, currentOrder]);
+
+  useEffect(() => {
+    if (!orderData && number) {
+      void dispatch(getOrderByNumber(Number(number)));
+    }
+  }, [dispatch, number, orderData]);
 
   /* Готовим данные для отображения */
   const orderInfo = useMemo(() => {

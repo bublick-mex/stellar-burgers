@@ -8,7 +8,7 @@ import {
   registerUserApi,
   resetPasswordApi,
 } from '../../utils/burger-api';
-import { setCookie, deleteCookie, getCookie } from '../../utils/cookie';
+import { setCookie, deleteCookie } from '../../utils/cookie';
 
 import type { TLoginData, TRegisterData } from '../../utils/burger-api';
 import type { SerializedError } from '@reduxjs/toolkit';
@@ -63,14 +63,10 @@ export const registerUser = createAsyncThunk(
 export const checkUserAuth = createAsyncThunk(
   'auth/checkUserAuth',
   async (_, { dispatch }) => {
-    if (getCookie('accessToken')) {
-      try {
-        const data = await getUserApi();
-        return data.user;
-      } finally {
-        dispatch(authChecked());
-      }
-    } else {
+    try {
+      const data = await getUserApi();
+      return data.user;
+    } finally {
       dispatch(authChecked());
     }
   }

@@ -12,7 +12,7 @@ export const ProfileOrders = (): React.JSX.Element => {
     void dispatch(getProfileOrders());
   }, [dispatch]);
 
-  if (isLoading || !userOrders.length) {
+  if (isLoading || !userOrders) {
     return <Preloader />;
   }
 

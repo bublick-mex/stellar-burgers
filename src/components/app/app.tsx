@@ -92,6 +92,16 @@ const RouteComponent = (): React.JSX.Element => {
       <Routes location={background ?? location}>
         <Route path="/" element={<ConstructorPage />} />
         <Route path="/feed" element={<Feed />} />
+        <Route path="/feed/:number" element={<OrderInfo />} />
+        <Route path="/ingredients/:id" element={<IngredientDetails />} />
+        <Route
+          path="/profile/orders/:number"
+          element={
+            <ProtectedRoute>
+              <OrderInfo />
+            </ProtectedRoute>
+          }
+        />
         <Route
           path="/login"
           element={
@@ -164,9 +174,11 @@ const RouteComponent = (): React.JSX.Element => {
           <Route
             path="/profile/orders/:number"
             element={
-              <Modal title="" onClose={handleClose}>
-                <OrderInfo />
-              </Modal>
+              <ProtectedRoute>
+                <Modal title="" onClose={handleClose}>
+                  <OrderInfo />
+                </Modal>
+              </ProtectedRoute>
             }
           />
         </Routes>
