@@ -1,21 +1,27 @@
+import { useSelector } from '@/services/store';
 import { Preloader, OrderInfoUI } from '@ui';
 import { useMemo } from 'react';
+import { useParams } from 'react-router-dom';
 
 import type { TIngredient } from '@utils-types';
 
 export const OrderInfo = (): React.JSX.Element => {
-  /** TODO: взять переменные orderData и ingredients из стора */
-  const orderData = {
-    createdAt: '',
-    ingredients: [],
-    _id: '',
-    status: '',
-    name: '',
-    updatedAt: 'string',
-    number: 0,
-  };
+  const { number } = useParams<{ number: string }>();
+  const { ingredients } = useSelector((state) => state.ingredients);
+  const feedOrders = useSelector((state) => state.feed.orders);
+  const profileOrders = useSelector((state) => state.feed?.userOrders);
+  const modalOrder = useSelector((state) => state.order?.orderModalData);
 
-  const ingredients: TIngredient[] = [];
+  const orderData = useMemo(() => {
+    if (modalOrder && modalOrder.number.toString() === number) {
+      return modalOrder;
+    }
+    const allOrders = [...feedOrders, ...profileOrders];
+    if (allOrders.length > 0) {
+      return allOrders.find((item) => item.number.toString() === number);
+    }
+    return null;
+  }, [number, modalOrder, feedOrders, profileOrders]);
 
   /* Готовим данные для отображения */
   const orderInfo = useMemo(() => {
