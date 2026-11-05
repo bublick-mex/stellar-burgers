@@ -3,11 +3,13 @@ import { ResetPasswordUI } from '@ui-pages';
 import { type SyntheticEvent, useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 
+import type { SerializedError } from '@reduxjs/toolkit';
+
 export const ResetPassword = (): React.JSX.Element => {
   const navigate = useNavigate();
   const [password, setPassword] = useState('');
   const [token, setToken] = useState('');
-  const [error, setError] = useState<Error | null>(null);
+  const [error, setError] = useState<SerializedError | null>(null);
 
   const handleSubmit = (e: SyntheticEvent): void => {
     e.preventDefault();
@@ -18,7 +20,11 @@ export const ResetPassword = (): React.JSX.Element => {
         localStorage.removeItem('resetPassword');
         void navigate('/login');
       })
-      .catch((err: Error) => setError(err));
+      .catch((err: unknown) => {
+        const errorMessage =
+          err instanceof Error ? err.message : 'Произошла ошибка при сбросе пароля';
+        setError({ message: errorMessage });
+      });
   };
 
   useEffect(() => {
