@@ -2,7 +2,6 @@ import { BurgerConstructorUI } from '@ui';
 import { useMemo } from 'react';
 import { useNavigate } from 'react-router-dom';
 
-import { clearConstructor } from '../../services/slices/constructorSlice';
 import { clearOrderModalData, orderBurger } from '../../services/slices/orderSlice';
 import { useSelector, useDispatch } from '../../services/store';
 
@@ -28,7 +27,6 @@ export const BurgerConstructor = (): React.JSX.Element | null => {
       constructorItems.bun?._id,
     ];
     void dispatch(orderBurger(ingredientIds));
-    void dispatch(clearConstructor());
   };
 
   const closeOrderModal = (): void => {

@@ -21,7 +21,13 @@ export const OrderInfo = (): React.JSX.Element => {
     }
     const allOrders = [...feedOrders, ...profileOrders];
     if (allOrders.length > 0) {
-      return allOrders.find((item) => item.number.toString() === number);
+      const foundOrder = allOrders.find((item) => item.number.toString() === number);
+      if (foundOrder) {
+        return foundOrder;
+      }
+    }
+    if (currentOrder && currentOrder.number.toString() === number) {
+      return currentOrder;
     }
     return null;
   }, [number, modalOrder, feedOrders, profileOrders, currentOrder]);

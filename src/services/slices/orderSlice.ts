@@ -23,7 +23,7 @@ export const getOrderByNumber = createAsyncThunk(
   'order/getOrderByNumber',
   async (number: number, { rejectWithValue }) => {
     try {
-      const res = getOrderByNumberApi(number);
+      const res = await getOrderByNumberApi(number);
       return res;
     } catch (error) {
       return rejectWithValue(error);
