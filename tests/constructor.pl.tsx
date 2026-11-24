@@ -20,43 +20,49 @@ test.describe('конструктор бургера и оформление з�
     await page.goto('/');
   });
 
-test('добавляет булку и начинку в конструктор', async ({ page }) => {
-  await expect(page.getByText('Выберите булки').first()).toBeVisible();
-  await expect(page.getByText('Выберите начинку')).toBeVisible();
+  test('добавляет булку и начинку в конструктор', async ({ page }) => {
+    await expect(page.getByText('Выберите булки').first()).toBeVisible();
+    await expect(page.getByText('Выберите начинку')).toBeVisible();
 
-  const bunItem = page.locator('li', { hasText: BUN_NAME });
-  await bunItem.getByRole('button', { name: 'Добавить' }).click();
+    const bunItem = page.locator('li', { hasText: BUN_NAME });
+    await bunItem.getByRole('button', { name: 'Добавить' }).click();
 
-  const mainItem = page.locator('li', { hasText: MAIN_NAME });
-  await mainItem.getByRole('button', { name: 'Добавить' }).click();
+    const mainItem = page.locator('li', { hasText: MAIN_NAME });
+    await mainItem.getByRole('button', { name: 'Добавить' }).click();
 
-  await expect(page.getByText(`${BUN_NAME} (верх)`)).toBeVisible();
-  await expect(page.getByText(`${BUN_NAME} (низ)`)).toBeVisible();
-  await expect(page.getByText('Выберите начинку')).not.toBeVisible();
-  await expect(mainItem.getByText('1')).toBeVisible();
-});
+    await expect(page.getByText(`${BUN_NAME} (верх)`)).toBeVisible();
+    await expect(page.getByText(`${BUN_NAME} (низ)`)).toBeVisible();
+    await expect(page.getByText('Выберите начинку')).not.toBeVisible();
+    await expect(mainItem.getByText('1')).toBeVisible();
+  });
 
   test('открывает модальное окно с данными выбранного ингредиента и закрывает по крестику и оверлею', async ({
     page,
   }) => {
     const modalsRoot = page.locator('#modals');
+    const modalWindow = modalsRoot.locator('> div').first();
     const ingredientCard = page.locator('li a', { hasText: MAIN_NAME });
+
     await ingredientCard.click();
 
+    await expect(modalWindow).toBeVisible();
     await expect(modalsRoot.getByText(MAIN_NAME)).toBeVisible();
     await expect(modalsRoot.getByText('4242')).toBeVisible();
 
     await modalsRoot.getByRole('button', { name: 'Закрыть' }).click();
-    await expect(modalsRoot.getByText(MAIN_NAME)).not.toBeVisible();
+    await expect(modalWindow).not.toBeVisible();
+    await expect(modalsRoot.locator('> *')).toHaveCount(0);
 
     await ingredientCard.click();
+    await expect(modalWindow).toBeVisible();
     await expect(modalsRoot.getByText(MAIN_NAME)).toBeVisible();
 
-    const modalBox = await modalsRoot.locator('> div').first().boundingBox();
+    const modalBox = await modalWindow.boundingBox();
     if (modalBox) {
       await page.mouse.click(10, 10);
     }
-    await expect(modalsRoot.getByText(MAIN_NAME)).not.toBeVisible();
+    await expect(modalWindow).not.toBeVisible();
+    await expect(modalsRoot.locator('> *')).toHaveCount(0);
   });
 
   test('создает заказ с авторизацией, проверяет номер и очистку конструктора, затем закрывает модалку', async ({
@@ -87,12 +93,16 @@ test('добавляет булку и начинку в конструктор'
     await page.getByRole('button', { name: 'Оформить заказ' }).click();
 
     const modalsRoot = page.locator('#modals');
-    await expect(modalsRoot.getByText(ORDER_NUMBER)).toBeVisible();
+    const modalWindow = modalsRoot.locator('> div').first();
+
+    await expect(modalWindow).toBeVisible();
+    await expect(modalsRoot.getByText(ORDER_NUMBER, { exact: true })).toBeVisible();
 
     await expect(page.getByText('Выберите булки').first()).toBeVisible();
     await expect(page.getByText('Выберите начинку')).toBeVisible();
 
     await modalsRoot.getByRole('button', { name: 'Закрыть' }).click();
-    await expect(modalsRoot.getByText(ORDER_NUMBER)).not.toBeVisible();
+    await expect(modalWindow).not.toBeVisible();
+    await expect(modalsRoot.locator('> *')).toHaveCount(0);
   });
 });
