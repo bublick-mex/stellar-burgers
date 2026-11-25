@@ -37,7 +37,9 @@ export default defineConfig({
   projects: [
     {
       name: 'chromium',
-      use: { ...devices['Desktop Chrome'] },
+      use: { ...devices['Desktop Chrome'],
+        channel: 'chrome',
+       },
     },
 
     // {
@@ -76,5 +78,8 @@ export default defineConfig({
     command: 'npm run start',
     url: 'http://localhost:4000',
     reuseExistingServer: !process.env.CI,
+    env: {
+      BURGER_API_URL: 'https://norma.ffapi.ru/api',
+    },
   }
 });
